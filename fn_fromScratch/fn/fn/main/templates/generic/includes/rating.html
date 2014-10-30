@@ -1,0 +1,34 @@
+{% load mezzanine_tags rating_tags i18n future %}
+
+<div class="rating">
+
+    <form method="post" action="{% url "rating" %}">
+        {% fields_for rating_form %}
+    </form>
+    
+    {# don't let users vote on own objects? #}
+    {# {% if request.user != rating_obj.user %} #}
+    
+    {% if not rated or request.user.is_anonymous %}
+    <span class="arrows">
+      {# classes are important for functionality - see drum.js #}
+        <a href="#" title="Upvote this."><i class="voteup">^</i></a>
+
+        {# probably best to do this check in the view eventually #}
+        {% if request.user.profile.karma > 90 %} 
+        <a href="#" title="Downvote this."><i class="votedown">&or;</i></a>
+        {% endif %}
+        
+    </span>
+    {% endif %}
+    
+    {# {% endif %} #}
+    
+    <span class="score small">
+        {% with rating_obj.comments_count|default:0 as comments_count %}
+        <!--{{ rating_sum|add:comments_count }}-->
+        {{ rating_sum }} point{{ rating_sum|default:0|pluralize }}
+        {% endwith %}
+    </span>
+</div>
+
